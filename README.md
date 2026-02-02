@@ -44,7 +44,19 @@ brew install poppler
 sudo apt install poppler-utils
 ```
 
-## 安裝
+## 快速安裝（推薦）
+
+發布到 PyPI 後，只需一行指令即可在 Claude Code 中添加此 MCP：
+
+```bash
+# 使用 uvx（推薦）
+claude mcp add pdf-to-png -- uvx pdf-to-png-converter-mcp
+
+# 或使用 pipx
+claude mcp add pdf-to-png -- pipx run pdf-to-png-converter-mcp
+```
+
+## 從源碼安裝
 
 ### 方法一：使用 uv（推薦）
 
@@ -54,10 +66,8 @@ git clone https://github.com/LostSunset/pdf_to_png_converter_mcp.git
 cd pdf_to_png_converter_mcp
 
 # 使用 uv 建立虛擬環境並安裝
-uv venv .venv314 --python 3.14
-uv pip install -e . --python .venv314/Scripts/python.exe  # Windows
-# 或
-uv pip install -e . --python .venv314/bin/python  # macOS/Linux
+uv venv .venv --python 3.12
+uv pip install -e .
 ```
 
 ### 方法二：使用 pip
@@ -233,4 +243,4 @@ ruff format
 
 ---
 
-**Version:** 0.1.2
+**Version:** 0.1.3
