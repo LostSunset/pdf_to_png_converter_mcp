@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 [project]
 name = "pdf-to-png-converter-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "MCP server for converting PDF files to PNG images with paper download capabilities"
 readme = "README.md"
 license = { text = "MIT" }
