@@ -3,12 +3,22 @@
 from __future__ import annotations
 
 import asyncio
+import functools
 import logging
 import subprocess
 import sys
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from PIL.Image import Image
 
 logger = logging.getLogger("pdf-to-png-mcp.converter")
+
+# Windows-specific flag for hiding console window
+_CREATION_FLAGS: int = 0
+if sys.platform == "win32":
+    _CREATION_FLAGS = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
 
 
 async def convert_pdf_to_png(
@@ -47,6 +57,11 @@ async def convert_pdf_to_png(
     return await _convert_with_pdftoppm(pdf_path, output_base, dpi)
 
 
+def _save_image(image: Image, path: Path) -> None:
+    """Save image to file."""
+    image.save(str(path), "PNG")
+
+
 async def _convert_with_pdf2image(
     pdf_path: Path,
     output_dir: Path,
@@ -57,9 +72,9 @@ async def _convert_with_pdf2image(
 
     # 在執行緒池中執行以避免阻塞
     loop = asyncio.get_event_loop()
-    images = await loop.run_in_executor(
+    images: list[Any] = await loop.run_in_executor(
         None,
-        lambda: convert_from_path(str(pdf_path), dpi=dpi),
+        functools.partial(convert_from_path, str(pdf_path), dpi=dpi),
     )
 
     png_files: list[Path] = []
@@ -67,7 +82,7 @@ async def _convert_with_pdf2image(
         output_path = output_dir / f"{pdf_path.stem}-{i:03d}.png"
         await loop.run_in_executor(
             None,
-            lambda img=image, path=output_path: img.save(str(path), "PNG"),
+            functools.partial(_save_image, image, output_path),
         )
         png_files.append(output_path)
         logger.info(f"已生成: {output_path.name}")
@@ -90,15 +105,17 @@ async def _convert_with_pdftoppm(
         str(output_base),
     ]
 
-    # 在 Windows 上隱藏命令視窗
-    creationflags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
+    # 建立 subprocess 參數
+    kwargs: dict[str, Any] = {
+        "stdout": asyncio.subprocess.PIPE,
+        "stderr": asyncio.subprocess.PIPE,
+    }
 
-    process = await asyncio.create_subprocess_exec(
-        *cmd,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-        creationflags=creationflags,
-    )
+    # 在 Windows 上隱藏命令視窗
+    if sys.platform == "win32":
+        kwargs["creationflags"] = _CREATION_FLAGS
+
+    process = await asyncio.create_subprocess_exec(*cmd, **kwargs)
 
     _, stderr = await process.communicate()
 

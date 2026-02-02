@@ -19,8 +19,10 @@ from .downloader import download_paper
 
 # 設定 UTF-8 編碼
 if sys.platform == "win32":
-    sys.stdout.reconfigure(encoding="utf-8")
-    sys.stderr.reconfigure(encoding="utf-8")
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[union-attr]
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8")  # type: ignore[union-attr]
 
 # 設定日誌
 logging.basicConfig(

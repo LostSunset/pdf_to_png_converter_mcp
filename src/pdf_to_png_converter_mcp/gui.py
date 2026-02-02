@@ -8,6 +8,7 @@ from __future__ import annotations
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 from PySide6.QtCore import Qt, QThread, Signal
 from PySide6.QtWidgets import (
@@ -27,6 +28,11 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+# Windows-specific flag for hiding console window
+_CREATION_FLAGS: int = 0
+if sys.platform == "win32":
+    _CREATION_FLAGS = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
 
 
 class ConvertWorker(QThread):
@@ -72,14 +78,14 @@ class ConvertWorker(QThread):
                         str(output_base),
                     ]
 
-                    creationflags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
+                    kwargs: dict[str, Any] = {
+                        "capture_output": True,
+                        "text": True,
+                    }
+                    if sys.platform == "win32":
+                        kwargs["creationflags"] = _CREATION_FLAGS
 
-                    result = subprocess.run(
-                        cmd,
-                        capture_output=True,
-                        text=True,
-                        creationflags=creationflags,
-                    )
+                    result = subprocess.run(cmd, **kwargs)
 
                     if result.returncode == 0:
                         self.log.emit(f"✓ 成功: {pdf_path.name}")

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 [project]
 name = "pdf-to-png-converter-mcp"
-version = "0.1.1"
+version = "0.1.2"
 description = "MCP server for converting PDF files to PNG images with paper download capabilities"
 readme = "README.md"
 license = { text = "MIT" }
@@ -103,7 +103,7 @@ addopts = "-v --tb=short"
 [tool.mypy]
 python_version = "3.10"
 warn_return_any = true
-warn_unused_ignores = true
+warn_unused_ignores = false
 disallow_untyped_defs = true
 ignore_missing_imports = true
 

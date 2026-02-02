@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
+from typing import Any
 
-import aiofiles
+import aiofiles  # type: ignore[import-untyped]
 import httpx
 
 logger = logging.getLogger("pdf-to-png-mcp.downloader")
@@ -84,7 +85,7 @@ async def search_paper(
     """
     api_url = "https://api.semanticscholar.org/graph/v1/paper/search"
 
-    params = {
+    params: dict[str, str | int] = {
         "query": query,
         "limit": max_results,
         "fields": "title,authors,year,venue,openAccessPdf",
@@ -97,13 +98,13 @@ async def search_paper(
         response = await client.get(api_url, params=params)
         response.raise_for_status()
 
-        data = response.json()
-        papers = data.get("data", [])
+        data: dict[str, Any] = response.json()
+        papers: list[dict[str, Any]] = data.get("data", [])
 
-        results = []
+        results: list[dict[str, str]] = []
         for paper in papers:
-            pdf_info = paper.get("openAccessPdf") or {}
-            authors = paper.get("authors", [])
+            pdf_info: dict[str, str] = paper.get("openAccessPdf") or {}
+            authors: list[dict[str, str]] = paper.get("authors", [])
             author_names = ", ".join(a.get("name", "") for a in authors[:3])
             if len(authors) > 3:
                 author_names += " et al."
