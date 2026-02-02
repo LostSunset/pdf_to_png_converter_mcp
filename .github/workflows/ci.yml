@@ -1,0 +1,105 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+env:
+  PYTHONIOENCODING: utf-8
+  PYTHONUTF8: "1"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv pip install --system ruff
+
+      - name: Run ruff check
+        run: ruff check .
+
+      - name: Run ruff format check
+        run: ruff format --check .
+
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv pip install --system -e ".[dev]"
+
+      - name: Set locale (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo locale-gen zh_TW.UTF-8
+          echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
+          echo "LC_ALL=en_US.UTF-8" >> $GITHUB_ENV
+
+      - name: Set locale (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
+          echo "LC_ALL=en_US.UTF-8" >> $GITHUB_ENV
+
+      - name: Set locale (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+          echo "PYTHONIOENCODING=utf-8" >> $env:GITHUB_ENV
+        shell: pwsh
+
+      - name: Run tests
+        run: pytest --cov=src/pdf_to_png_converter_mcp --cov-report=xml -v
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: false
+
+  type-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv pip install --system -e ".[dev]"
+
+      - name: Run mypy
+        run: mypy src/pdf_to_png_converter_mcp --ignore-missing-imports
