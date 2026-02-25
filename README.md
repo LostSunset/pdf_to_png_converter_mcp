@@ -178,15 +178,6 @@ pip install -e .
 - dpi (選填): 輸出解析度，預設 1200
 ```
 
-#### 5. `search_paper`
-搜尋學術論文（使用 Semantic Scholar API）。
-
-```
-參數：
-- query (必填): 搜尋關鍵字
-- max_results (選填): 最大結果數量，預設 5，最大 20
-```
-
 #### 4. `batch_convert_pdfs`
 批次轉換資料夾中的所有 PDF 檔案。
 
@@ -195,6 +186,15 @@ pip install -e .
 - folder_path (必填): 包含 PDF 檔案的資料夾路徑
 - dpi (選填): 輸出解析度，預設 1200
 - recursive (選填): 是否遞迴搜尋子資料夾，預設 True
+```
+
+#### 5. `search_paper`
+搜尋學術論文（使用 Semantic Scholar API）。
+
+```
+參數：
+- query (必填): 搜尋關鍵字
+- max_results (選填): 最大結果數量，預設 5，最大 20
 ```
 
 ### 使用範例
@@ -269,4 +269,4 @@ ruff format
 
 ---
 
-**Version:** 0.2.0
+**Version:** 0.2.1

@@ -1,6 +1,6 @@
 {
   "name": "pdf-to-png",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "PDF to PNG converter and academic paper tools for Claude Code",
   "author": {
     "name": "LostSunset"

@@ -11,7 +11,7 @@
       "name": "pdf-to-png",
       "source": "./",
       "description": "MCP server for PDF to PNG conversion, paper download, and Semantic Scholar search",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "category": "productivity"
     }
   ]
