@@ -57,7 +57,8 @@ async def list_tools() -> list[Tool]:
             name="convert_pdf_to_png",
             description=(
                 "將 PDF 檔案轉換為高品質 PNG 圖片。"
-                "支援自訂 DPI（預設 1200），輸出圖片會放在與 PDF 相同的目錄。"
+                "DPI 預設為 1200，除非使用者明確要求其他數值，否則不要傳入 dpi 參數。"
+                "輸出圖片會放在與 PDF 相同的目錄。"
             ),
             inputSchema={
                 "type": "object",
@@ -68,7 +69,7 @@ async def list_tools() -> list[Tool]:
                     },
                     "dpi": {
                         "type": "integer",
-                        "description": "輸出解析度（DPI），預設 1200",
+                        "description": "輸出解析度（DPI），預設 1200。除非使用者明確指定，否則不要傳入此參數",
                         "default": 1200,
                         "minimum": 72,
                         "maximum": 2400,
@@ -110,9 +111,10 @@ async def list_tools() -> list[Tool]:
         Tool(
             name="download_and_convert",
             description=(
-                "下載學術論文 PDF 並自動轉換為高品質 PNG 圖片。"
+                "下載學術論文 PDF 並自動轉換為高品質 PNG 圖片（預設 1200 DPI）。"
                 "會根據期刊名稱和論文標題自動建立資料夾結構，"
                 "並將 PDF 和 PNG 都放在該資料夾中。"
+                "除非使用者明確要求其他 DPI，否則不要傳入 dpi 參數。"
             ),
             inputSchema={
                 "type": "object",
@@ -135,7 +137,7 @@ async def list_tools() -> list[Tool]:
                     },
                     "dpi": {
                         "type": "integer",
-                        "description": "輸出解析度（DPI），預設 1200",
+                        "description": "輸出解析度（DPI），預設 1200。除非使用者明確指定，否則不要傳入此參數",
                         "default": 1200,
                         "minimum": 72,
                         "maximum": 2400,
@@ -146,7 +148,10 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="batch_convert_pdfs",
-            description=("批次轉換資料夾中的所有 PDF 檔案為 PNG 圖片。支援遞迴搜尋子資料夾。"),
+            description=(
+                "批次轉換資料夾中的所有 PDF 檔案為高品質 PNG 圖片（預設 1200 DPI）。"
+                "支援遞迴搜尋子資料夾。除非使用者明確要求其他 DPI，否則不要傳入 dpi 參數。"
+            ),
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -156,7 +161,7 @@ async def list_tools() -> list[Tool]:
                     },
                     "dpi": {
                         "type": "integer",
-                        "description": "輸出解析度（DPI），預設 1200",
+                        "description": "輸出解析度（DPI），預設 1200。除非使用者明確指定，否則不要傳入此參數",
                         "default": 1200,
                         "minimum": 72,
                         "maximum": 2400,

@@ -20,6 +20,8 @@ Use the `download_and_convert` tool with:
 - `journal` (required): Journal name
 - `title` (required): Paper title
 - `base_dir` (optional): Base directory
-- `dpi` (optional): Resolution for PNG conversion, default 1200
+- `dpi` (optional): Resolution for PNG conversion, default 1200. **Only pass this if the user specifies a different value.**
+
+**IMPORTANT: Default DPI is 1200. Do NOT pass the `dpi` parameter unless the user explicitly requests a different DPI value.**
 
 Papers are organized as: `base_dir/journal/title/title.pdf`

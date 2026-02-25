@@ -7,16 +7,18 @@ description: Convert PDF files to high-quality PNG images. Use when the user wan
 
 Use the MCP tools provided by the pdf-to-png server to convert PDF files.
 
+**IMPORTANT: Default DPI is 1200. Do NOT pass the `dpi` parameter unless the user explicitly requests a different DPI value. Never lower the DPI on your own.**
+
 ## Single File Conversion
 Use the `convert_pdf_to_png` tool with:
 - `pdf_path` (required): Full path to the PDF file
-- `dpi` (optional): Resolution, default 1200. Range: 72-2400
+- `dpi` (optional): Resolution, default 1200. **Only pass this if the user specifies a different value.**
 - `output_dir` (optional): Output directory, defaults to same as PDF
 
 ## Batch Conversion
 Use the `batch_convert_pdfs` tool with:
 - `folder_path` (required): Path to folder containing PDFs
-- `dpi` (optional): Resolution, default 1200
+- `dpi` (optional): Resolution, default 1200. **Only pass this if the user specifies a different value.**
 - `recursive` (optional): Search subdirectories, default true
 
 Always confirm the PDF path exists before attempting conversion.
