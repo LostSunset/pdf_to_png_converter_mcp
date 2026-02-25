@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "pdf-to-png",
-      "source": ".",
+      "source": "./",
       "description": "MCP server for PDF to PNG conversion, paper download, and Semantic Scholar search",
       "version": "0.2.0",
       "category": "productivity"
