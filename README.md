@@ -44,6 +44,23 @@ brew install poppler
 sudo apt install poppler-utils
 ```
 
+## Claude Code Plugin 安裝
+
+你可以直接從 marketplace 安裝為 Claude Code Plugin：
+
+```bash
+# Step 1: 加入 marketplace
+/plugin marketplace add LostSunset/pdf_to_png_converter_mcp
+
+# Step 2: 安裝 plugin
+/plugin install pdf-to-png@pdf-to-png-marketplace
+```
+
+安裝後可使用的 Skills：
+- `/pdf-to-png:convert-pdf` — 將 PDF 轉換為 PNG
+- `/pdf-to-png:download-paper` — 下載學術論文
+- `/pdf-to-png:search-paper` — 搜尋 Semantic Scholar
+
 ## 快速安裝（推薦）
 
 發布到 PyPI 後，只需一行指令即可在 Claude Code 中添加此 MCP：
@@ -161,6 +178,15 @@ pip install -e .
 - dpi (選填): 輸出解析度，預設 1200
 ```
 
+#### 5. `search_paper`
+搜尋學術論文（使用 Semantic Scholar API）。
+
+```
+參數：
+- query (必填): 搜尋關鍵字
+- max_results (選填): 最大結果數量，預設 5，最大 20
+```
+
 #### 4. `batch_convert_pdfs`
 批次轉換資料夾中的所有 PDF 檔案。
 
@@ -243,4 +269,4 @@ ruff format
 
 ---
 
-**Version:** 0.1.3
+**Version:** 0.2.0

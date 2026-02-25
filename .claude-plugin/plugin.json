@@ -1,0 +1,12 @@
+{
+  "name": "pdf-to-png",
+  "version": "0.2.0",
+  "description": "PDF to PNG converter and academic paper tools for Claude Code",
+  "author": {
+    "name": "LostSunset"
+  },
+  "homepage": "https://github.com/LostSunset/pdf_to_png_converter_mcp",
+  "repository": "https://github.com/LostSunset/pdf_to_png_converter_mcp",
+  "license": "MIT",
+  "keywords": ["pdf", "png", "converter", "paper", "academic", "mcp"]
+}

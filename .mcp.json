@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "pdf-to-png": {
+      "command": "uv",
+      "args": ["run", "--directory", "${CLAUDE_PLUGIN_ROOT}", "pdf-to-png-mcp"],
+      "env": {
+        "PYTHONIOENCODING": "utf-8"
+      }
+    }
+  }
+}

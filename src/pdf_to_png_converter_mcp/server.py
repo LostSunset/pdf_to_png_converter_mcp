@@ -15,7 +15,7 @@ from mcp.server.stdio import stdio_server
 from mcp.types import TextContent, Tool
 
 from .converter import convert_pdf_to_png
-from .downloader import download_paper
+from .downloader import download_paper, search_paper
 
 # 設定 UTF-8 編碼
 if sys.platform == "win32":
@@ -170,6 +170,30 @@ async def list_tools() -> list[Tool]:
                 "required": ["folder_path"],
             },
         ),
+        Tool(
+            name="search_paper",
+            description=(
+                "搜尋學術論文（使用 Semantic Scholar API）。"
+                "根據關鍵字搜尋論文，返回標題、作者、年份、期刊和 PDF 連結。"
+            ),
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "搜尋關鍵字",
+                    },
+                    "max_results": {
+                        "type": "integer",
+                        "description": "最大結果數量，預設 5",
+                        "default": 5,
+                        "minimum": 1,
+                        "maximum": 20,
+                    },
+                },
+                "required": ["query"],
+            },
+        ),
     ]
 
 
@@ -187,6 +211,8 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
             result = await handle_download_and_convert(arguments)
         elif name == "batch_convert_pdfs":
             result = await handle_batch_convert(arguments)
+        elif name == "search_paper":
+            result = await handle_search_paper(arguments)
         else:
             result = f"未知的工具: {name}"
 
@@ -325,6 +351,34 @@ async def handle_batch_convert(arguments: dict[str, Any]) -> str:
         f"DPI: {dpi}\n"
         f"詳細結果:\n" + "\n".join(results)
     )
+
+
+async def handle_search_paper(arguments: dict[str, Any]) -> str:
+    """處理論文搜尋請求."""
+    query = arguments["query"]
+    max_results = arguments.get("max_results", 5)
+
+    try:
+        results = await search_paper(query, max_results)
+
+        if not results:
+            return f"找不到與 '{query}' 相關的論文"
+
+        lines = [f"搜尋 '{query}' 的結果（{len(results)} 篇）:\n"]
+        for i, paper in enumerate(results, 1):
+            lines.append(f"{i}. {paper['title']}")
+            lines.append(f"   作者: {paper['authors']}")
+            if paper.get("year"):
+                lines.append(f"   年份: {paper['year']}")
+            if paper.get("venue"):
+                lines.append(f"   期刊: {paper['venue']}")
+            if paper.get("pdf_url"):
+                lines.append(f"   PDF: {paper['pdf_url']}")
+            lines.append("")
+
+        return "\n".join(lines)
+    except Exception as e:
+        return f"搜尋失敗: {e!s}"
 
 
 def main() -> None:

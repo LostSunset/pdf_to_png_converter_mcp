@@ -133,6 +133,10 @@ git push origin main --tags
 - 測試時設定 `PYTHONIOENCODING=utf-8`
 - Windows 上需要確保終端正確顯示中文
 
+## 倉庫位址
+
+- **GitHub**：https://github.com/LostSunset/pdf_to_png_converter_mcp
+
 ## 貢獻指南
 
 1. Fork 專案
